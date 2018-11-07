@@ -144,8 +144,60 @@ def delete(entity_type, db):
                 print("Wrong id. Try again...")
 
 
-def search(entity_type, db):
-    return
+def search(db):
+    command = search_type()
+
+    commands = {
+        1: search_bool,
+        2: search_range,
+        3: search_text
+    }
+
+    if command in commands:
+        commands[command](db)
+
+
+def search_bool(db):
+    condition = input("Is club plays at euro cups (True or False): ") == "True"
+    for club in db.search_clubs_euro(condition):
+        print_club(club)
+
+
+def search_range(db):
+    n1 = check_input(input_num, "Please input 1st number: ")
+    n2 = check_input(input_num, "Please input 2nd number: ")
+    print("  PlAYERS")
+    for player in db.search_range_players(n1, n2):
+        print_player(player)
+
+    print("  AGENTS")
+    for agent in db.search_range_agents(n1, n2):
+        print_agent(agent)
+
+
+def search_text(db):
+    text = input("Please input smth that u need to find: ")
+    for player in db.search(text):
+        print_player(player)
+
+
+def search_type():
+    while 1:
+        print_search()
+        i = choose_command()
+        entities = {
+            '1': 1,
+            '2': 2,
+            '3': 3
+        }
+        if i is 'q':
+            break
+
+        if i in entities:
+            return entities[i]
+        else:
+            print("____________________")
+            print("No such option, try again...")
 
 
 while True:
@@ -157,12 +209,14 @@ while True:
         '3': get_all,
         '4': get_one,
         '5': update,
-        '6': delete,
-        '7': search
+        '6': delete
     }
 
     if command is 'q':
         break
+
+    if command is '7':
+        search(db)
 
     if command in commands:
         commands[command](get_entity(), db)

@@ -4,6 +4,12 @@ def print_choose_entity():
     print("3 - Agents")
 
 
+def print_search():
+    print("1 - Boolean")
+    print("2 - Num range")
+    print("3 - Text")
+
+
 def print_main():
     print("1 - New entity")
     print("2 - New random entities")

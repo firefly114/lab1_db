@@ -3,11 +3,11 @@ import sys
 import random
 from string import punctuation
 
+
 def print_player(player):
-    print('Player №' + str(player[1]) + ': ' + player[0])
-    print('     ' + player[2].strftime("%b %d, %Y") + ' | $' + str(player[3]))
-    if player[5] is not None:
-        print('     Club: ' + player[8] + ' | ' + player[4])
+    print('| ' + str(player[1]) + '| ' + player[0])
+    print('| ' + player[2].strftime("%b %d, %Y") + ' | $' + str(player[3]) + "M | " + player[8].strip()+" | "+player[4]+" |")
+    print(' Agent')
 
 
 def print_club(row):
@@ -167,3 +167,26 @@ class Database:
         self.cur.execute("DELETE FROM agents where agents.id = " + str(aid))
         self.cur.execute("UPDATE players SET agent_id = 0 where agent_id = " + str(aid))
         self.conn.commit()
+
+    def search_clubs_euro(self, cond):
+        self.cur.execute("select * from clubs where clubs.euro_cups = " + str(cond) + " AND clubs.id > 0 ORDER BY clubs.id")
+        rows = self.cur.fetchall()
+        return rows
+
+    def search_range_players(self, n1, n2):
+        self.cur.execute("SELECT * from players INNER JOIN clubs ON players.club_id=clubs.id "
+                         "WHERE market_value BETWEEN " + str(n1) + " AND " + str(n2) + " ORDER BY players.id ")
+        players = self.cur.fetchall()
+        return players
+
+    def search_range_agents(self, n1, n2):
+        self.cur.execute("SELECT * from agents WHERE id > 0 AND salary BETWEEN " + str(n1) + " AND " + str(n2) +" ORDER BY id")
+        agents = self.cur.fetchall()
+        return agents
+
+    def search(self, text):
+        self.cur.execute(f"SELECT * FROM players INNER JOIN clubs ON players.club_id=clubs.id \
+                      WHERE make_tsvector(players.fullname) @@ to_tsquery('{text}') OR \
+                      make_tsvector(players.pos) @@ to_tsquery('{text}') OR "
+                         f"make_tsvector(clubs.title) @@ to_tsquery('{text}')")
+        return self.cur.fetchall();
