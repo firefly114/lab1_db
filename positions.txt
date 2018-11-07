@@ -1,0 +1,17 @@
+CB
+RM
+CM
+CDM
+LM
+ST
+RB
+LB
+GK
+LW
+RW
+CAM
+LWB
+RWB
+CF
+LF
+RF

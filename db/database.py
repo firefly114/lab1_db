@@ -1,6 +1,7 @@
 import psycopg2
 import sys
-
+import random
+from string import punctuation
 
 def print_player(player):
     print('Player №' + str(player[1]) + ': ' + player[0])
@@ -22,6 +23,8 @@ class Database:
         self.db = db
         self.conn = None
         self.cur = None
+
+        self.connect('postgres', '1234')
 
     def connect(self, username, password):
         try:
@@ -84,6 +87,17 @@ class Database:
             return
         return row
 
+    def get_random_club_id(self):
+        self.cur.execute("SELECT clubs.id from clubs Where clubs.id > 0 ORDER BY clubs.id")
+        rows = self.cur.fetchall()
+        id = rows[random.randint(0, len(rows)-1)]
+        return int(''.join(c for c in str(id) if c not in punctuation))
+
+    def get_random_agent_id(self):
+        self.cur.execute("SELECT agents.id from agents Where agents.id > 0 ORDER BY agents.id")
+        rows = self.cur.fetchall()
+        id = rows[random.randint(0, len(rows)-1)]
+        return int(''.join(c for c in str(id) if c not in punctuation))
     # def get_player_name(self, name):
     #     self.cur.execute(f"SELECT * from players WHERE fullname = '{name}'")
     #     row = self.cur.fetchone()
@@ -121,20 +135,22 @@ class Database:
         self.conn.commit()
 
     def update_player(self, player, pid):
-        self.cur.execute(f"UPDATE players SET (market_value, pos, club_id, agent_id) \
-                         VALUES({player.value},'{player.position}',{player.club_id},{player.agent_id}) \
-                         where players.id = {pid}")
+        self.cur.execute(f"UPDATE players SET market_value = {player.value},"
+                         f" pos = '{player.position}',"
+                         f" club_id = {player.club_id},"
+                         f" agent_id = {player.agent_id} \
+        where players.id = {pid}")
         self.conn.commit()
 
     def update_club(self, club, cid):
-        self.cur.execute(f"UPDATE clubs SET (coach, league, euro_cups) \
-                                 VALUES('{club.coach}','{club.league}',{club.euro_cups}) \
-                                 where clubs.id = {cid}")
+        self.cur.execute(f"UPDATE clubs SET coach = '{club.coach}', "
+                         f"league = '{club.league}', "
+                         f"euro_cups = {club.euro_cups} \
+                         where clubs.id = {cid}")
         self.conn.commit()
 
     def update_agent(self, agent, aid):
-        self.cur.execute(f"UPDATE agents SET (salary) \
-                                 VALUES({agent.salary}) \
+        self.cur.execute(f"UPDATE agents SET salary = {agent.salary} \
                                  where agents.id = {aid}")
         self.conn.commit()
 

@@ -1,9 +1,9 @@
 from db.database import Database
 from ui.prints import *
 from ui.input_entity import *
+from fill_db import RandomFillDB
 
 db = Database('localhost', 'lab1')
-db.connect('postgres', '1234')
 
 
 def get_entity():
@@ -37,7 +37,15 @@ def add_entity(entity_type, db):
 
 
 def add_random(entity_type, db):
-    return
+    random_fill = RandomFillDB(db)
+    entities = {
+        1: random_fill.add_n_players,
+        2: random_fill.add_n_clubs,
+        3: random_fill.add_n_agents
+    }
+
+    if entity_type in entities:
+        entities[entity_type](check_input(input_num, "Please input number of entities to add: "))
 
 
 def get_all(entity_type, db):
@@ -105,6 +113,7 @@ def update(entity_type, db):
                 if entity is None:
                     raise ValueError
                 update_func[entity_type](db, id)
+                break
             except ValueError:
                 print("Wrong id. Try again...")
 
