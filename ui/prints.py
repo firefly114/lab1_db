@@ -20,9 +20,14 @@ def print_main():
     print("7 - Search")
 
 
-def print_player(player):
+def print_player_and_club(player):
     print('| ' + str(player[1]) + '| ' + player[0])
     print('| ' + player[2].strftime("%b %d, %Y") + ' | $' + str(player[3]) + "M | " + player[8].strip()+" | "+player[4]+" |\n")
+
+
+def print_player(player):
+    print('| ' + str(player[1]) + '| ' + player[0])
+    print('| ' + player[2].strftime("%b %d, %Y") + ' | $' + str(player[3]) + "M " + " | "+player[4]+" |\n")
 
 
 def print_club(row):

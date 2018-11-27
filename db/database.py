@@ -185,8 +185,8 @@ class Database:
         return agents
 
     def search(self, text):
-        self.cur.execute(f"SELECT * FROM players INNER JOIN clubs ON players.club_id=clubs.id \
-                      WHERE make_tsvector(players.fullname) @@ to_tsquery('{text}') OR \
-                      make_tsvector(players.pos) @@ to_tsquery('{text}') OR "
-                         f"make_tsvector(clubs.title) @@ to_tsquery('{text}')")
-        return self.cur.fetchall();
+        self.cur.execute(f"SELECT ts_headline(fullname, q), players.id, birth, market_value, ts_headline(pos, q), club_id, agent_id \
+                        FROM to_tsquery('{text}') AS q, players \
+                      WHERE make_tsvector(players.fullname) @@ q OR \
+                      make_tsvector(players.pos) @@ q")
+        return self.cur.fetchall()

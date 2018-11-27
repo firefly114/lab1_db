@@ -56,7 +56,7 @@ def get_all(entity_type, db):
     }
 
     print_entities = {
-        1: print_player,
+        1: print_player_and_club,
         2: print_club,
         3: print_agent
     }
@@ -74,7 +74,7 @@ def get_one(entity_type, db):
     }
 
     print_entity = {
-        1: print_player,
+        1: print_player_and_club,
         2: print_club,
         3: print_agent
     }
@@ -168,7 +168,7 @@ def search_range(db):
     n2 = check_input(input_num, "Please input 2nd number: ")
     print("  PlAYERS")
     for player in db.search_range_players(n1, n2):
-        print_player(player)
+        print_player_and_club(player)
 
     print("  AGENTS")
     for agent in db.search_range_agents(n1, n2):
@@ -177,6 +177,8 @@ def search_range(db):
 
 def search_text(db):
     text = input("Please input smth that u need to find: ")
+    if " " in text:
+        text = text.replace(" ", " <-> ")
     for player in db.search(text):
         print_player(player)
 
@@ -198,6 +200,7 @@ def search_type():
         else:
             print("____________________")
             print("No such option, try again...")
+            continue
 
 
 while True:
@@ -217,6 +220,7 @@ while True:
 
     if command is '7':
         search(db)
+        continue
 
     if command in commands:
         commands[command](get_entity(), db)
