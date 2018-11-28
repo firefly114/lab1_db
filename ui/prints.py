@@ -7,7 +7,8 @@ def print_choose_entity():
 def print_search():
     print("1 - Boolean")
     print("2 - Num range")
-    print("3 - Text")
+    print("3 - Phrase")
+    print("4 - Words")
 
 
 def print_main():

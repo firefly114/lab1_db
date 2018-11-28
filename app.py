@@ -150,7 +150,8 @@ def search(db):
     commands = {
         1: search_bool,
         2: search_range,
-        3: search_text
+        3: search_phrase,
+        4: search_words
     }
 
     if command in commands:
@@ -175,10 +176,18 @@ def search_range(db):
         print_agent(agent)
 
 
-def search_text(db):
+def search_phrase(db):
     text = input("Please input smth that u need to find: ")
     if " " in text:
         text = text.replace(" ", " <-> ")
+    for player in db.search(text):
+        print_player(player)
+
+
+def search_words(db):
+    text = input("Please input smth that u need to find: ")
+    if " " in text:
+        text = text.replace(" ", " & ")
     for player in db.search(text):
         print_player(player)
 
@@ -190,7 +199,8 @@ def search_type():
         entities = {
             '1': 1,
             '2': 2,
-            '3': 3
+            '3': 3,
+            '4': 4
         }
         if i is 'q':
             break
